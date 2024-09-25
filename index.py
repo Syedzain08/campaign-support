@@ -1,8 +1,12 @@
-from flask import Flask, request, render_template, session, redirect, url_for
+from flask import Flask, request, render_template, session, redirect, url_for, flash
+from dotenv import load_dotenv
+from os import getenv
 
 app = Flask(__name__)
 
-app.secret_key = "your_secret_key"
+load_dotenv()
+
+app.secret_key = getenv("SECRET_KEY")
 
 users = {"user": "password", "zain": "yanzain"}
 
@@ -19,12 +23,14 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-
-        if username in users and users[username] == password:
-            session["username"] = username
-            return redirect(url_for("index"))
+        if username and password != "":
+            if username in users and users[username] == password:
+                session["username"] = username
+                return redirect(url_for("index"))
+            else:
+                return "Invalid credentials", 401
         else:
-            return "Invalid credentials", 401
+            flash(message="Username Or Password Cannot Be Empty!", category="warning")
 
     return render_template("layouts/login.html")
 
