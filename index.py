@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, session, redirect, url_for, f
 from dotenv import load_dotenv
 from os import getenv
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static", static_url_path="/static")
 
 load_dotenv()
 
@@ -23,14 +23,11 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        if username and password != "":
-            if username in users and users[username] == password:
-                session["username"] = username
-                return redirect(url_for("index"))
-            else:
-                return "Invalid credentials", 401
+        if username in users and users[username] == password:
+            session["username"] = username
+            return redirect(url_for("index"))
         else:
-            flash(message="Username Or Password Cannot Be Empty!", category="warning")
+            return "Invalid credentials", 401
 
     return render_template("layouts/login.html")
 

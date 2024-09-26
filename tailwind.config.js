@@ -3,6 +3,18 @@ module.exports = {
   content: ["./templates/layouts/*"],
   theme: {
     extend: { 
+      fontFamily: {
+      primary: ["Roboto"]
+      },
+
+      screens: {
+       'xsm': '480px',
+      },
+      backgroundImage: {
+        "login-bg": "url('/static/img/login-page-bg.jpg') !important",
+        "login-bg-md": "url('/static/img/login-page-bg-tb.jpg') !important",
+        "login-bg-sm": "url('/static/img/login-page-bg-m.jpg') !important"
+      },
       colors: {
         sage: {
           50: '#f3f9f7',
@@ -65,9 +77,9 @@ module.exports = {
           900: '#0a1b34',
         },
         // Functional colors
-        primary: '#4b5e5b', // color-primary
+        primary: '#222222', // color-primary
         secondary: '#1E1F20', // color-secondary
-        accent: '#f27644', // color-accent
+        accent: '#cb5018', // color-accent
         background: '#141619', // color-background
         text: '#f7efd3', // color-text
       },
