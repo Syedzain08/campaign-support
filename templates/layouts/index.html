@@ -1,3 +1,5 @@
+{% extends 'layouts/base.html' %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -6,6 +8,9 @@
     <title>homepage</title>
   </head>
   <body>
-    This is the homepage
+    {% block content %}
+    <p>This is the homepage!</p>
+    <p>Welcome {{username}}</p>
+    {% endblock %}
   </body>
 </html>

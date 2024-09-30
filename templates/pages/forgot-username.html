@@ -1,0 +1,80 @@
+{% extends 'layouts/base.html' %} {% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forgot Username</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+  </head>
+  <body>
+    <div
+      class="xl:bg-forgot-username-bg md:bg-forgot-username-bg-md bg-forgot-username-bg-sm p-0 m-0 w-full h-screen bg-cover bg-no-repeat bg-fixed bg-[100vh 100vh] relative flex items-center justify-center"
+    >
+      <div
+        class="flex items-center md:min-w-[600px] md:min-h-[400px] min-w-[320px] min-h-[360px] absolute inset-1/2 transform -translate-x-1/2 -translate-y-1/2 flex-col bg-background rounded-xl shadow-sm border border-black opacity-95 justify-center"
+      >
+        <div class="flex items-center flex-col">
+          <h1
+            class="font-primary font-bold text-primary md:text-4xl md:mb-7 md:mt-4 text-2xl mb-7 mt-4 text-center md:mx-0 mx-2"
+          >
+            Forgot your username? <br />
+            No worries. We'll find it!
+          </h1>
+          <div class="flex items-center justify-center h-full w-full">
+            <form
+              class="flex flex-col items-center justify-center"
+              action="{{ url_for('forgot_username') }}"
+              method="POST"
+            >
+              <div class="flex flex-col items-center">
+                <p
+                  class="text-primary font-primary md:text-lg text-base text-center"
+                >
+                  We'll send you an email with your username. Just provide us
+                  with the registered email.
+                </p>
+                <br />
+                <div>
+                  <label
+                    class="text-primary font-primary md:text-3xl text-2xl"
+                    for="forgot-u-email"
+                    >Email:</label
+                  >
+                  <div class="relative">
+                    <input
+                      class="bg-black border border-gray-700 focus:border-primary focus:ring-0 focus:outline-none text-primary font-primary mt-3 h-10 rounded-lg px-3 md:w-[30em] w-[18em]"
+                      type="email"
+                      name="Email"
+                      placeholder="Email"
+                      id="forgot-u-email"
+                      value="{{ email or  '' }}"
+                      autocomplete="off"
+                      required
+                    />
+                    <span
+                      class="material-symbols-outlined text-primary absolute top-5 right-2"
+                    >
+                      mail
+                    </span>
+                  </div>
+                </div>
+                <br />
+                <input
+                  class="text-black font-extrabold font-primary bg-primary h-10 w-24 rounded-lg hover:cursor-pointer active:bg-orange-500 hover:bg-orange-600 p-2 mr-4"
+                  type="submit"
+                  name="submit"
+                />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+{% endblock %}

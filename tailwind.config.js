@@ -1,8 +1,18 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./templates/layouts/*"],
+  content: ["./templates/layouts/*", "./templates/pages/*"],
   theme: {
     extend: { 
+      keyframes: {
+        slideIn: {
+          '0%': { transform: 'translatey(-100%)', opacity: '0' },
+          '100%': { transform: 'translatey(0)', opacity: '1' },
+        },
+        },
+        animation: {
+          "slide-in": "slideIn 0.1s ease-out forwards"
+        },
+
       fontFamily: {
       primary: ["Roboto"]
       },
@@ -11,10 +21,28 @@ module.exports = {
        'xsm': '480px',
       },
       backgroundImage: {
-        "login-bg": "url('/static/img/login-page-bg.jpg') !important",
-        "login-bg-md": "url('/static/img/login-page-bg-tb.jpg') !important",
-        "login-bg-sm": "url('/static/img/login-page-bg-m.jpg') !important"
+
+        "login-bg": "url('/static/img/login-page/login-page-bg.jpg') !important",
+        "login-bg-md": "url('/static/img/login-page/login-page-bg-tb.jpg') !important",
+        "login-bg-sm": "url('/static/img/login-page/login-page-bg-m.jpg') !important",
+
+        "register-bg": "url('/static/img/register-page/register-page-bg.jpg') !important",
+        "register-bg-md": "url('/static/img/register-page/register-page-bg-tb.jpg') !important",
+        "register-bg-sm": "url('/static/img/register-page/register-page-bg-m.jpg') !important",
+
+        "forgot-username-bg": "url('/static/img/forgot-u-page/forgot-u-bg.jpg') !important",
+        "forgot-username-bg-md": "url('/static/img/forgot-u-page/forgot-u-bg-tb.jpg') !important",
+        "forgot-username-bg-sm": "url('/static/img/forgot-u-page/forgot-u-bg.jpg') !important",
+
+        "forgot-p-bg": "url('/static/img/forgot-p-page/forgot-p-page-bg.jpg') !important",
+        "forgot-p-bg-md": "url('/static/img/forgot-p-page/forgot-p-page-bg-tb.jpg') !important",
+        "forgot-p-bg-sm": "url('/static/img/forgot-p-page/forgot-p-page-bg-m.jpg') !important",
+
+        "reset-p-bg": "url('/static/img/reset-p-page/reset-p-bg.jpg') !important",
+        "reset-p-bg-md": "url('/static/img/reset-p-page/reset-p-bg-tb.jpg') !important",
+        "reset-p-bg-sm": "url('/static/img/reset-p-page/reset-p-bg-m.jpg') !important",
       },
+      
       colors: {
         sage: {
           50: '#f3f9f7',
@@ -77,10 +105,10 @@ module.exports = {
           900: '#0a1b34',
         },
         // Functional colors
-        primary: '#222222', // color-primary
-        secondary: '#1E1F20', // color-secondary
-        accent: '#cb5018', // color-accent
-        background: '#141619', // color-background
+        primary: '#cb5018', // color-primary
+        secondary: '#0e2743', // color-secondary
+        accent: '#13212E', // color-accent
+        background: '#222222', // color-background
         text: '#f7efd3', // color-text
       },
     },
