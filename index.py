@@ -5,20 +5,22 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 from bcrypt import checkpw, hashpw, gensalt
 from re import search
-import smtplib
+from smtplib import SMTP
 from secrets import token_urlsafe
 from flask_mail import Mail, Message
-from time import time
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 
 app = Flask(__name__, static_folder="static", static_url_path="/static")
 
 load_dotenv()
 
 app.secret_key = getenv("SECRET_KEY")
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///./users.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URI")
+
+admin = Admin(app=app)
 db = SQLAlchemy(app)
 mail = Mail(app)
-
 
 
 class Users(db.Model):
@@ -46,7 +48,30 @@ class Users(db.Model):
         is_long_enough = 10 <= len(password) <= 100
         
         return all([has_special, has_number, has_uppercase, has_lowercase, is_long_enough])
+
+    def check_username_criteria(username):
+        # Define the criteria
+        min_length = 3
+        max_length = 25
+        prohibited_chars = r"[!@#$%^&*()\+=\{\}\[\]|\\:;\"'<>,.?/ ]"
+
+        if len(username) < min_length or len(username) > max_length:
+            return False
+
+        if search(prohibited_chars, username):
+            return False
+
+        if username[0] in "!@#$%^&*()-+=[]{},|\\:;\"'<>,.?/" or username[-1] in "!@#$%^&*()-+=[]{},|\\:;\"'<>,.?/":
+            return False
+
+        if search(r"[!@#$%^&*()\-+=\{\}\[\]|\\:;\"'<>,.?/]{2,}", username):
+            return False
+
+        return True
+
+
     
+admin.add_view(ModelView(Users, db.session))
     
 @app.route("/")
 def home():
@@ -79,10 +104,20 @@ def register():
         flash("Logout first to register again!")
         return redirect(url_for( "index" ))
     if request.method == "POST":
-        email = request.form["Email"].lower().lower()
-        username = request.form["Username"]
+        email = request.form["Email"].lower()
+        username = request.form["Username"].lower()
         password = request.form["Password"]
         confirm_password = request.form["confirm-password"]
+
+        if not Users.check_username_criteria(username=username):
+            flash("""
+                    <ul>Your username must contain:</ul>
+                    <li>- Between 3 and 20 characters</li>
+                    <li>- No spaces or special characters, except for hyphens (-) and underscores (_)</li>
+                    <li>- Cannot start or end with a special character</li>
+                    <li>- No consecutive special characters</li>
+                    """)
+            return render_template("pages/register.html", email=email, username=username)
 
         if password != confirm_password:
             flash("Passwords don't match!")
@@ -169,11 +204,12 @@ def forgot_password():
                 Best regards,
                 Campaign Website Support Team"""
                 
-                server = smtplib.SMTP("smtp.gmail.com", 587)
+                server = SMTP("smtp.gmail.com", 587)
                 server.starttls()
                 my_password = getenv("GMAIL_SMTP_PASSWORD")
-                server.login("campaignwebsiteteam@gmail.com", my_password)
-                server.sendmail("campaignwebsiteteam@gmail.com", email, msg)
+                user_email = getenv("GMAIL_USER")
+                server.login(user_email, my_password)
+                server.sendmail(user_email, email, msg)
 
                 flash("Password reset instructions have been sent to your email.")
                 return redirect(url_for("login"))
@@ -207,11 +243,12 @@ def forgot_username():
                 Best regards,
                 Campaign Website Support Team"""
                 
-                server = smtplib.SMTP("smtp.gmail.com", 587)
+                server = SMTP("smtp.gmail.com", 587)
                 server.starttls()
                 my_password = getenv("GMAIL_SMTP_PASSWORD")
-                server.login("campaignwebsiteteam@gmail.com", my_password)
-                server.sendmail("campaignwebsiteteam@gmail.com", email, msg)
+                user_email = getenv("GMAIL_USER")
+                server.login(user_email, my_password)
+                server.sendmail(user_email, email, msg)
 
 
                 flash("Email Sent!")
@@ -275,4 +312,6 @@ def reset_password(token):
     return render_template("pages/reset-password.html", token=token)
 
 if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
