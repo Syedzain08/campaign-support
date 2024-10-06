@@ -8,8 +8,11 @@ from re import search
 from smtplib import SMTP
 from secrets import token_urlsafe
 from flask_mail import Mail, Message
-from flask_admin import Admin
+from flask_admin import Admin, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
 
 app = Flask(__name__, static_folder="static", static_url_path="/static")
 
@@ -17,25 +20,36 @@ load_dotenv()
 
 app.secret_key = getenv("SECRET_KEY")
 app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URI")
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SESSION_COOKIE_SECURE'] = True  
+app.config['SESSION_COOKIE_HTTPONLY'] = True  
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
-admin = Admin(app=app)
 db = SQLAlchemy(app)
 mail = Mail(app)
+limiter = Limiter(
+    get_remote_address,  
+    app=app,
+    storage_uri="memory://", 
+    default_limits=["300 per day", "100 per hour"] 
+)
 
 
 class Users(db.Model):
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(200), nullable=False)
     email = db.Column(db.String(200), nullable=False)
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
-    password = db.Column(db.LargeBinary, nullable=False) 
-    token_store = db.Column(db.LargeBinary, nullable=True)
+    password = db.Column(db.String, nullable=False) 
+    token_store = db.Column(db.String, nullable=True)
     token_expiry = db.Column(db.DateTime, nullable=True)
+    is_admin = db.Column(db.Boolean, nullable=False, default=False)
 
 
     def set_password(password_given):
-        password_hash = hashpw(password=password_given.encode("utf-8"), salt=gensalt())
-        return password_hash
+        password_hash = hashpw(password=password_given.encode("utf-8"), salt=gensalt(rounds=4))
+        return password_hash.decode("utf-8")
 
     def check_password(password_given, password_hash):
         return checkpw(password_given.encode('utf-8'), password_hash)
@@ -68,10 +82,63 @@ class Users(db.Model):
             return False
 
         return True
-
-
     
-admin.add_view(ModelView(Users, db.session))
+
+class MyIndexView(AdminIndexView):
+    def is_accessible(self):
+        if "username" not in session:
+            return False
+        
+        current_user = Users.query.filter_by(username=session["username"]).first()
+        if current_user:
+            if current_user.is_admin:
+                return True
+            else:
+                return False
+        
+        return False
+    
+    def inaccessible_callback(self, name, **kwargs):
+        if "username" not in session:
+            flash("Login first to access this page!")
+            return redirect(url_for("login"))
+        
+        current_user = Users.query.filter_by(username=session["username"]).first()
+        if current_user and not current_user.is_admin:
+            flash("Access Denied! You do not have the clearance to view this page!")
+        
+        return redirect(url_for("index"))
+        
+class MyModelView(ModelView):
+    def is_accessible(self):
+        if "username" not in session:
+            return False
+        
+        current_user = Users.query.filter_by(username=session["username"]).first()
+        if current_user:
+            if current_user.is_admin:
+                return True
+            else:
+                return False
+        
+        return False
+    
+    def inaccessible_callback(self, name, **kwargs):
+        if "username" not in session:
+            flash("Login first to access this page!")
+            return redirect(url_for("login"))
+        
+        current_user = Users.query.filter_by(username=session["username"]).first()
+        if current_user and not current_user.is_admin:
+            flash("Access Denied! You do not have the clearance to view this page!")
+
+        return redirect(url_for("index"))
+
+
+admin = Admin(app=app, index_view=MyIndexView())   
+admin.add_view(MyModelView(model=Users, session=db.session))
+
+
     
 @app.route("/")
 def home():
@@ -81,15 +148,16 @@ def home():
 
 
 @app.route("/login", methods=["GET", "POST"])
+@limiter.limit("5 per minute")
 def login():
     if "username" in session:
         flash("Already logged in!")
         return redirect(url_for("index"))
     if request.method == "POST":
-        username = request.form["username"]
+        username = request.form["username"].lower()
         password = request.form["password"]
         current_user = Users.query.filter_by(username=username).first()
-        if current_user and Users.check_password(password_given=password, password_hash=current_user.password):
+        if current_user and Users.check_password(password_given=password, password_hash=bytes(current_user.password, "utf-8")):
             session["username"] = username
             return redirect(url_for("index"))
         else:
@@ -272,7 +340,7 @@ def reset_password(token):
     
     user = Users.query.filter(Users.token_store.isnot(None), Users.token_expiry > datetime.utcnow()).first()
     
-    if user is None or not Users.check_password(token, user.token_store):
+    if user is None or not Users.check_password(token, bytes(user.token_store, "utf-8")):
         flash("The password reset link is invalid or has expired.")
         return redirect(url_for("forgot_password"))
     

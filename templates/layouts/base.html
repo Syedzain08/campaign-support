@@ -6,10 +6,12 @@
     <link rel="stylesheet" href="/static/css/main.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="/static/css/scrollbar.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
       rel="stylesheet"
     />
+    <title>{% block title %}{% endblock %}</title>
     <script src="/static/js/alert-dismissal.js"></script>
     <script src="/static/js/show-password.js"></script>
   </head>
@@ -18,7 +20,7 @@
     messages %}
     <div
       class="z-20 flex items-center p-4 text-red-800 rounded-lg dark:bg-accent dark:text-red-400 alert border border-primary absolute top-0 w-full animate-slide-in"
-      role="error"
+      role="alert"
     >
       <svg
         class="flex-shrink-0 w-4 h-4"
@@ -31,7 +33,6 @@
           d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"
         />
       </svg>
-      <span class="sr-only">Info</span>
       <div class="ms-3 text-sm font-medium">{{msg|safe}}</div>
       <button
         type="button"
@@ -39,7 +40,6 @@
         data-dismiss-target="#alert-2"
         aria-label="Close"
       >
-        <span class="sr-only">Close</span>
         <svg
           class="w-3 h-3"
           aria-hidden="true"
