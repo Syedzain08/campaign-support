@@ -1,39 +1,140 @@
+{% include 'components/sidebar.html' %}
+
 <link
   rel="stylesheet"
   href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
 />
+<script href="/static/js/sidebar-toggle.js"></script>
+<link rel="stylesheet" href="/static/css/custom.css" />
+
 <nav
-  class="fixed flex w-full flex-wrap items-center justify-between h-16 bg-gradient-to-b from-[#0D0D0D] to-[#1A1A1A]"
+  class="flex px-4 w-full flex-wrap items-center justify-between h-16 bg-gradient-to-b from-[#0D0D0D] to-[#1A1A1A]"
 >
-  <ul class="flex w-full flex-wrap items-center justify-between px-3">
-    <li>
-      <div class="flex flex-row justify-center items-center">
-        <img
-          class="h-8"
-          src="https://flowbite.com/docs/images/logo.svg"
-          alt="Campaign-Support Logo"
-        />
-        <a class="text-gray-300 text-2xl ml-2 hover:text-primary" href="/"
-          >Campaign Support</a
+  <div class="flex flex-row flex-nowrap">
+    <ul>
+      <li class="group">
+        <a class="flex items-center" href="/">
+          <!-- Border Circle Container -->
+          <div
+            class="w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center"
+          >
+            <!-- SVG Logo -->
+            <img
+              src="/static/img/Campaign Support Logo.svg"
+              alt="Campaign-Support Logo"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <!-- Campaign Text -->
+          <p
+            class="text-primary text-lg md:text-xl ml-2 hover:text-orange-500 active:text-orange-600 font-primary"
+          >
+            Campaign Support
+          </p>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div>
+    <ul>
+      <li>
+        <div class="md:flex flex-row items-center hidden">
+          <form
+            action="{{url_for('search')}}"
+            method="POST"
+            class="hidden search-form"
+            id="nav-search-form"
+          >
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+            <input
+              type="text"
+              name="search-query"
+              id="nav-search-query"
+              class="search-query"
+            />
+          </form>
+          <input
+            class="min-w-72 mr-3 px-2 py-2 rounded-lg bg-gray-900 border border-gray-800 text-white placeholder-gray-400 focus:outline-none focus:border-primary"
+            type="text"
+            placeholder="Search"
+            required
+            id="nav-search-bar"
+          />
+          <button
+            id="nav-submit-btn"
+            class="px-2 py-2 bg-primary text-black font-semibold rounded-lg hover:bg-orange-600"
+          >
+            <span class="material-symbols-outlined"> search </span>
+          </button>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div>
+    <ul class="flex flex-row items-center">
+      {% if is_admin %}
+      <li>
+        <a
+          class="text-white bg-red-700 hover:bg-red-600 active:bg-red-700 px-4 py-1.5 rounded text-sm font-primary mr-3 md:block hidden"
+          href="/admin"
         >
-      </div>
-    </li>
-    <div class="flex flex-row justify-center items-center">
-      <input
-        class="bg-transparent border-0 py-1.5 px-1.5 placeholder:text-gray-300 focus-within:border focus-within:border-primary"
-        type="search"
-        placeholder="Search"
-      />
-      <button class="bg-primary flex p-2 rounded-lg ml-2">
-        <span class="material-symbols-outlined text-black"> search </span>
-      </button>
-    </div>
-    <li>
-      <a
-        class="text-gray-300 text-xl ml-5 hover:text-primary"
-        href="{{ url_for( 'logout' ) }}"
-        >Logout</a
-      >
-    </li>
-  </ul>
+          Admin Panel
+        </a>
+      </li>
+      {% endif %}
+      <!-- Create Post -->
+      <li>
+        <a
+          class="text-white bg-primary hover:bg-orange-600 active:bg-orange-700 px-4 py-1.5 rounded text-sm font-primary mr-3 md:block hidden"
+          href="/posts/add"
+        >
+          Create Post
+        </a>
+      </li>
+      <!-- Logout -->
+
+      <li>
+        <a
+          class="text-white bg-[#1A1A1A] hover:bg-gray-800 active:bg-gray-700 px-4 py-1.5 rounded text-sm font-primary md:block hidden"
+          href="/logout"
+        >
+          Logout
+        </a>
+      </li>
+
+      <li>
+        <button
+          id="hamburger-menu"
+          class="md:hidden flex items-center justify-center p-1"
+          onclick="showsidebar()"
+        >
+          <span
+            id="hamburger-icon"
+            class="material-symbols-outlined text-primary text-2xl"
+          >
+            menu
+          </span>
+        </button>
+      </li>
+    </ul>
+  </div>
 </nav>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const hamburgerMenuBtn = document.getElementById("hamburger-menu");
+    const hamburgerIcon = document.getElementById("hamburger-icon");
+
+    hamburgerMenuBtn.addEventListener("click", () => {
+      hamburgerIcon.classList.remove("animate-spin-once");
+      void hamburgerIcon.offsetWidth;
+      hamburgerIcon.classList.add("animate-spin-once");
+    });
+  });
+
+  function showsidebar() {
+    const sidebar = document.querySelector("#sidebar");
+    sidebar.classList.toggle("hidden");
+    sidebar.classList.toggle("-translate-x-full");
+  }
+</script>

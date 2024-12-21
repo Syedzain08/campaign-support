@@ -1,0 +1,76 @@
+{% extends 'layouts/base.html' %} {% include 'components/navbar.html' %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Pending Articles{% endblock %}</title>
+  </head>
+  <body class="bg-gray-100 min-h-screen">
+    {% block content %}
+    <div class="container mx-auto py-8 px-4">
+      <h1 class="text-3xl font-bold text-center mb-8 text-gray-400">
+        Pending Articles for Approval
+      </h1>
+
+      <!-- Pending Articles Table -->
+      {% if articles %}
+      <div class="overflow-hidden rounded-lg shadow-lg">
+        <table class="min-w-full bg-white">
+          <thead>
+            <tr
+              class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal"
+            >
+              <th class="py-3 px-6 text-left">ID</th>
+              <th class="py-3 px-6 text-left">Title</th>
+              <th class="py-3 px-6 text-left">Author</th>
+              <th class="py-3 px-6 text-left">Created At</th>
+              <th class="py-3 px-6 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-600 text-sm font-light">
+            {% for article in articles %}
+            <tr class="border-b border-gray-200 hover:bg-gray-100">
+              <td class="py-3 px-6 text-left whitespace-nowrap">
+                {{ article.id }}
+              </td>
+              <td class="py-3 px-6 text-left">{{ article.title }}</td>
+              <td class="py-3 px-6 text-left">{{ article.author.username }}</td>
+              <td class="py-3 px-6 text-left">
+                {{ article.created_at.strftime('%Y-%m-%d %H:%M:%S') }}
+              </td>
+              <td class="py-3 px-6 text-left">
+                <a href="{{ article.slug }}">Link To Post</a>
+              </td>
+              <td class="py-3 px-6 text-center">
+                <form method="POST" class="inline">
+                  <input
+                    type="hidden"
+                    name="article_id"
+                    value="{{ article.id }}"
+                  />
+                  <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token }}"
+                  />
+                  <button
+                    type="submit"
+                    class="bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600 transition duration-200"
+                  >
+                    Approve
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="text-center text-gray-600">No pending articles found.</p>
+      {% endif %}
+    </div>
+    {% endblock %}
+  </body>
+</html>

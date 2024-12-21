@@ -1,18 +1,232 @@
 {% extends 'layouts/base.html' %} {% include 'components/navbar.html' %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    {% block title %}Homepage{% endblock %}
+    <meta
+      name="description"
+      content="Discover exciting adventures and stories that inspire"
+    />
+    {% block title %}Adventure Awaits | Your Journey Begins Here{% endblock %}
   </head>
-  <body>
+  <body class="bg-gray-950 text-white">
     {% block content %}
-    <div class="bg-background w-screen h-screen">
-      <p>This is the homepage!</p>
-      <p>Welcome {{username}}</p>
-      <p><a href="{{ url_for( 'logout' ) }}">Logout</a></p>
-    </div>
+    <main>
+      <!-- Hero Section -->
+      <section
+        class="w-full h-screen bg-index-bg bg-cover bg-no-repeat bg-top relative flex items-center justify-center"
+      >
+        <div
+          class="absolute inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center px-6 text-center"
+        >
+          <div class="max-w-3xl">
+            <h1
+              class="text-white text-4xl md:text-5xl xl:text-6xl font-extrabold font-primary mb-6 animate-fadeIn"
+            >
+              Unleash Your Imagination
+            </h1>
+            <p
+              class="text-lg md:text-xl text-gray-200 mb-10 max-w-xl mx-auto font-primary"
+            >
+              Every story is a new world waiting to be explored. Start your
+              adventure today.
+            </p>
+            <a href="#explore" class="inline-block">
+              <button
+                class="bg-primary text-black px-10 py-4 text-lg font-semibold rounded-full shadow-lg hover:bg-orange-600 hover:scale-105 transition-all font-primary"
+              >
+                Begin Your Journey
+              </button>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Latest Adventures Section -->
+      <section id="explore" class="container mx-auto px-4 py-20">
+        <div class="text-center mb-16">
+          <h2
+            class="text-4xl md:text-5xl font-bold text-gray-100 mb-4 font-primary"
+          >
+            Latest Adventures
+          </h2>
+          <p class="text-xl text-gray-400 max-w-2xl mx-auto font-primary">
+            Dive into captivating stories that transport you to new worlds.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {% for article in latest_articles %}
+          <article
+            class="bg-gray-900 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+          >
+            <a href="posts/{{ article.slug }}" class="block">
+              <!-- Article Image with Categories -->
+              <div class="relative h-56">
+                <img
+                  src="{{ article.thumbnail or article.first_image }}"
+                  alt="{{ article.title }}"
+                  class="w-full h-full object-cover"
+                />
+                {% if article.categories %}
+                <div class="absolute top-4 left-4 flex gap-2">
+                  {% for category in article.categories %}
+                  <span
+                    class="px-3 py-1 text-xs font-semibold bg-primary text-black rounded-full"
+                  >
+                    {{ category.name }}
+                  </span>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Article Content -->
+              <div class="p-6">
+                <h3
+                  class="text-xl font-semibold text-primary mb-2 font-primary"
+                >
+                  {{ article.title }}
+                </h3>
+                <p class="text-gray-400 line-clamp-2 font-primary">
+                  {{ article.first_sentence }}
+                </p>
+
+                <!-- Tags -->
+                {% if article.tags %}
+                <div class="mt-4 flex flex-wrap gap-2">
+                  {% for tag in article.tags %}
+                  <span
+                    class="px-2 py-1 text-xs bg-gray-800 text-gray-400 rounded"
+                  >
+                    #{{ tag.name }}
+                  </span>
+                  {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Article Footer -->
+                <div
+                  class="mt-4 flex items-center justify-between border-t border-gray-800 pt-4"
+                >
+                  <div class="flex items-start flex-col">
+                    <span
+                      class="text-sm font-extrabold text-primary font-primary"
+                    >
+                      {{ article.author.username }}
+                    </span>
+                    <span class="text-sm text-gray-500 font-primary">
+                      {{ article.created_at.strftime('%B %d, %Y') }}
+                    </span>
+                  </div>
+                  <div class="flex items-center text-sm text-gray-500">
+                    <span class="mr-3">
+                      <i class="fas fa-eye mr-1"></i>
+                      {{ article.view_count }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <!-- Popular Articles Section -->
+      <section class="container mx-auto px-4 py-20">
+        <div class="text-center mb-16">
+          <h2
+            class="text-4xl md:text-5xl font-bold text-gray-100 mb-4 font-primary"
+          >
+            Popular Adventures
+          </h2>
+          <p class="text-xl text-gray-400 max-w-2xl mx-auto font-primary">
+            Discover the most-read adventures, locations, and lore in the world
+            of Winds of the Forgotten Gods and beyond.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {% for article in popular_articles %}
+          <article
+            class="bg-gray-900 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+          >
+            <a href="posts/{{ article.slug }}" class="block">
+              <!-- Article Image with Categories -->
+              <div class="relative h-56">
+                <img
+                  src="{{ article.thumbnail or article.first_image }}"
+                  alt="{{ article.title }}"
+                  class="w-full h-full object-cover"
+                />
+                {% if article.categories %}
+                <div class="absolute top-4 left-4 flex gap-2">
+                  {% for category in article.categories %}
+                  <span
+                    class="px-3 py-1 text-xs font-semibold bg-primary text-black rounded-full"
+                  >
+                    {{ category.name }}
+                  </span>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Article Content -->
+              <div class="p-6">
+                <h3
+                  class="text-xl font-semibold text-primary mb-2 font-primary"
+                >
+                  {{ article.title }}
+                </h3>
+                <p class="text-gray-400 line-clamp-2 font-primary">
+                  {{ article.first_sentence }}
+                </p>
+
+                <!-- Tags -->
+                {% if article.tags %}
+                <div class="mt-4 flex flex-wrap gap-2">
+                  {% for tag in article.tags %}
+                  <span
+                    class="px-2 py-1 text-xs bg-gray-800 text-gray-400 rounded"
+                  >
+                    #{{ tag.name }}
+                  </span>
+                  {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Article Footer -->
+                <div
+                  class="mt-4 flex items-center justify-between border-t border-gray-800 pt-4"
+                >
+                  <div class="flex items-start flex-col">
+                    <span
+                      class="text-sm font-extrabold text-primary font-primary"
+                    >
+                      {{ article.author.username }}
+                    </span>
+                    <span class="text-sm text-gray-500 font-primary">
+                      {{ article.created_at.strftime('%B %d, %Y') }}
+                    </span>
+                  </div>
+                  <div class="flex items-center text-sm text-gray-500">
+                    <span class="mr-3">
+                      <i class="fas fa-eye mr-1"></i>
+                      {{ article.view_count }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+    </main>
     {% endblock %}
   </body>
 </html>

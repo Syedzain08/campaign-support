@@ -1,0 +1,48 @@
+{% extends 'layouts/base.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block title %}Internal Server Error{% endblock %}
+  </head>
+
+  <body>
+    {% block content %}
+    <div
+      class="w-full h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-b from-[#1A1A1A] to-[#0D0D0D]"
+    >
+      <div class="mb-8">
+        <img
+          class="rounded-xl shadow-2xl max-w-full max-h-96 object-cover mb-11 md:mb-0"
+          src="/static/img/errors/500/500-art.jpg"
+          alt="Chaos Unleashed"
+        />
+      </div>
+
+      <p
+        class="text-primary md:text-5xl text-2xl font-extrabold md:mb-4 mb-8 font-primary"
+      >
+        Catastrophic Failure!
+      </p>
+      <p
+        class="text-primary md:text-2xl text-xl font-semibold md:mb-4 mb-8 font-primary"
+      >
+        The forces of chaos have disrupted the weave of reality.
+      </p>
+      <p class="text-primary text-lg md:mb-6 mb-12 font-primary">
+        Something went terribly wrong on our end. The dungeon master is already
+        working on restoring order. Please try again later.
+      </p>
+      <a href="/">
+        <button
+          class="bg-primary text-black px-6 py-3 text-xl font-semibold rounded-full shadow-lg hover:bg-orange-600 hover:scale-105 transition-all active:bg-orange-500 font-primary"
+        >
+          Back To Homepage
+        </button>
+      </a>
+    </div>
+    {% endblock %}
+  </body>
+</html>

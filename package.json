@@ -11,6 +11,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "froala-editor": "^4.3.1",
     "tailwindcss": "^3.4.13"
   }
 }

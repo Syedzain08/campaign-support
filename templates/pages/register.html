@@ -16,35 +16,36 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
     />
-    <title>Register</title>
+    <title>{% block title %}Register{% endblock %}</title>
   </head>
   <body>
     <div
       class="xl:bg-register-bg md:bg-register-bg-md bg-register-bg-sm p-0 m-0 w-full h-screen bg-cover bg-no-repeat bg-fixed bg-[100vh 100vh] relative flex items-center justify-center"
     >
       <div
-        class="flex items-center md:min-w-[600px] md:min-h-[680px] min-w-[320px] min-h-[690px] absolute inset-1/2 transform -translate-x-1/2 -translate-y-1/2 flex-col bg-background rounded-xl shadow-sm border border-black opacity-95 justify-center"
+        class="flex items-center md:w-[600px] md:h-[700px] w-[360px] h-[700px] absolute inset-1/2 transform -translate-x-1/2 -translate-y-1/2 flex-col bg-background rounded-xl shadow-sm border border-black opacity-95 justify-center"
       >
         <div class="flex items-center flex-col">
           <h1
             class="font-primary font-bold text-primary md:text-4xl md:mb-7 md:mt-4 text-3xl mb-7 mt-4 text-center md:mx-0 mx-2"
           >
-            Register to join the adventure!
+            Register to Join the Adventure!
           </h1>
           <div class="flex items-center justify-center h-full w-full">
             <form method="POST" action="{{ url_for('register') }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
               <div>
                 <label
-                  class="text-primary font-primary md:text-3xl text-2xl"
+                  class="text-primary font-primary md:text-2xl text-2xl"
                   for="email"
                   >Email:</label
                 >
                 <br />
                 <div class="relative">
                   <input
-                    class="bg-black border border-gray-700 focus:border-primary focus:ring-0 focus:outline-none text-primary font-primary mt-3 h-10 rounded-lg px-3 md:w-[30em] w-[18em]"
+                    class="bg-black border border-gray-700 focus:border-primary focus:ring-0 focus:outline-none text-primary font-primary mt-3 h-10 rounded-lg px-3 md:w-[28em] w-[18em]"
                     type="email"
-                    placeholder="Email"
+                    placeholder="Type your email"
                     name="Email"
                     id="email"
                     value="{{ email or '' }}"
@@ -61,16 +62,16 @@
               <br />
               <div>
                 <label
-                  class="text-primary font-primary md:text-3xl text-2xl"
+                  class="text-primary font-primary md:text-2xl text-2xl"
                   for="username"
                   >Username:</label
                 >
                 <br />
                 <div class="relative">
                   <input
-                    class="bg-black border border-gray-700 focus:border-primary focus:ring-0 focus:outline-none text-primary font-primary mt-3 h-10 rounded-lg px-3 md:w-[30em] w-[18em]"
+                    class="bg-black border border-gray-700 focus:border-primary focus:ring-0 focus:outline-none text-primary font-primary mt-3 h-10 rounded-lg px-3 md:w-[28em] w-[18em]"
                     type="text"
-                    placeholder="Username"
+                    placeholder="Type your username"
                     name="Username"
                     id="username"
                     value="{{ username or '' }}"
@@ -87,16 +88,16 @@
               <br />
               <div>
                 <label
-                  class="text-primary font-primary md:text-3xl text-2xl"
+                  class="text-primary font-primary md:text-2xl text-2xl"
                   for="password"
                   >Password:</label
                 ><br />
                 <div class="relative">
                   <input
-                    class="bg-black border border-gray-700 focus:border-primary focus:ring-0 focus:outline-none text-primary font-primary mt-3 h-10 rounded-lg px-3 md:w-[30em] w-[18em]"
+                    class="bg-black border border-gray-700 focus:border-primary focus:ring-0 focus:outline-none text-primary font-primary mt-3 h-10 rounded-lg px-3 md:w-[28em] w-[18em]"
                     type="password"
                     id="password"
-                    placeholder="Password"
+                    placeholder="Type your password"
                     name="Password"
                     required
                   />
@@ -121,15 +122,15 @@
               <br />
               <div>
                 <label
-                  class="text-primary font-primary md:text-3xl text-2xl"
+                  class="text-primary font-primary md:text-2xl text-2xl"
                   for="Confirm-password"
                   >Confirm Password:</label
                 ><br />
                 <div class="relative">
                   <input
-                    class="bg-black border border-gray-700 focus:border-primary focus:ring-0 focus:outline-none text-primary font-primary mt-3 h-10 rounded-lg px-3 md:w-[30em] w-[18em]"
+                    class="bg-black border border-gray-700 focus:border-primary focus:ring-0 focus:outline-none text-primary font-primary mt-3 h-10 rounded-lg px-3 md:w-[28em] w-[18em]"
                     type="password"
-                    placeholder="Confirm Password"
+                    placeholder="Confirm password"
                     name="confirm-password"
                     id="Confirm-password"
                     required

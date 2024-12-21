@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./templates/layouts/*", "./templates/pages/*", "./templates/components/*"],
+  content: ["./templates/layouts/*", "./templates/pages/*", "./templates/components/*", "./static/js/*"],
   theme: {
     extend: { 
       keyframes: {
@@ -8,9 +8,15 @@ module.exports = {
           '0%': { transform: 'translatey(-100%)', opacity: '0' },
           '100%': { transform: 'translatey(0)', opacity: '1' },
         },
+        spinOnce: {
+            '0%': { transform: 'rotate(0deg)' },
+            '100%': { transform: 'rotate(360deg)' },
+        },
+    
         },
         animation: {
-          "slide-in": "slideIn 0.1s ease-out forwards"
+          "slide-in": "slideIn 0.1s ease-out forwards",
+          "spin-once": "spinOnce 300ms linear forwards"
         },
 
       fontFamily: {
@@ -41,6 +47,10 @@ module.exports = {
         "reset-p-bg": "url('/static/img/reset-p-page/reset-p-bg.jpg') !important",
         "reset-p-bg-md": "url('/static/img/reset-p-page/reset-p-bg-tb.jpg') !important",
         "reset-p-bg-sm": "url('/static/img/reset-p-page/reset-p-bg-m.jpg') !important",
+
+        "index-bg": "url('/static/img/index/index-bg.jpg') !important",
+        "index-bg-md": "url('/static/img/index/index-bg-tb.jpg') !important",
+        "index-bg-sm": "url('/static/img/index/index-bg-m.jpg') !important",
       },
       
       colors: {

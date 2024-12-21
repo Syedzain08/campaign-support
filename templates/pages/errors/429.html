@@ -1,0 +1,48 @@
+{% extends 'layouts/base.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block title %}Too Many Requests{% endblock %}
+  </head>
+
+  <body>
+    {% block content %}
+    <div
+      class="w-full h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-b from-[#0D0D0D] to-[#1A1A1A]"
+    >
+      <div class="mb-8">
+        <img
+          class="rounded-xl shadow-2xl max-w-full max-h-96 object-cover mb-11 md:mb-0"
+          src="/static/img/errors/429/429-art.png"
+          alt="Tasha: The Time Keeper"
+        />
+      </div>
+
+      <p
+        class="text-primary md:text-5xl text-2xl font-extrabold md:mb-4 mb-8 font-primary"
+      >
+        Hold Your Horses! Tasha Needs a Moment!
+      </p>
+      <p
+        class="text-primary md:text-2xl text-xl font-semibold md:mb-4 mb-8 font-primary"
+      >
+        Too many requests at once.
+      </p>
+      <p class="text-primary text-lg md:mb-6 mb-12 font-primary">
+        Even Tasha's Cauldron of Everything can't handle this many simultaneous
+        requests! Please wait a few moments before trying again.
+      </p>
+      <a href="/">
+        <button
+          class="bg-primary text-black px-6 py-3 text-xl font-semibold rounded-full shadow-lg hover:bg-orange-600 hover:scale-105 transition-all active:bg-orange-500 font-primary"
+        >
+          Return to the Material Plane
+        </button>
+      </a>
+    </div>
+    {% endblock %}
+  </body>
+</html>

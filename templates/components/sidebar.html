@@ -1,0 +1,158 @@
+<nav
+  class="sidebar bg-gradient-to-b from-[#0D0D0D] to-[#1A1A1A] md:hidden fixed inset-x-0 bottom-0 top-16 z-40 p-4 justify-center transform -translate-x-full transition-transform duration-300 ease-in-out hidden"
+  id="sidebar"
+>
+  <div class="flex flex-col items-center">
+    <ul>
+      <li class="p-5 w-full">
+        <form
+          action="{{url_for('search')}}"
+          method="POST"
+          class="hidden search-form"
+          id="sidebar-search-form"
+        >
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+          <input
+            type="text"
+            name="search-query"
+            id="sidebar-search-query"
+            class="search-query"
+          />
+        </form>
+        <div class="flex flex-row items-center w-full space-x-2">
+          <input
+            class="min-w-72 mr-3 px-2 py-2 rounded-lg bg-gray-900 border border-gray-800 text-white placeholder-gray-400 focus:outline-none focus:border-primary"
+            type="text"
+            placeholder="Search"
+            required
+            id="sidebar-search-bar"
+          />
+          <button
+            id="sidebar-submit-btn"
+            class="px-2 py-2 bg-primary text-black font-semibold rounded-lg hover:bg-orange-600"
+          >
+            <span class="material-symbols-outlined"> search </span>
+          </button>
+        </div>
+      </li>
+      {% if is_admin %}
+      <li class="p-5">
+        <a
+          href="/admin"
+          class="relative border border-gray-700 flex items-center justify-between w-full p-4 rounded-lg group overflow-hidden hover:bg-gray-800 focus:bg-gray-700 transition duration-300"
+        >
+          <span
+            class="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent opacity-0 group-hover:opacity-30 transition-opacity duration-300 pointer-events-none"
+          ></span>
+          <span
+            class="relative z-10 text-primary text-xl group-hover:text-orange-500 font-primary"
+          >
+            Admin Console
+          </span>
+          <span
+            class="relative z-10 text-primary group-hover:text-orange-500 material-symbols-outlined"
+          >
+            admin_panel_settings
+          </span>
+        </a>
+      </li>
+      {% endif %}
+      <li class="p-5">
+        <a
+          href="/posts/add"
+          class="relative border border-gray-700 flex items-center justify-between w-full p-4 rounded-lg group overflow-hidden hover:bg-gray-800 focus:bg-gray-700 transition duration-300"
+        >
+          <span
+            class="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent opacity-0 group-hover:opacity-30 transition-opacity duration-300 pointer-events-none"
+          ></span>
+          <span
+            class="relative z-10 text-primary text-xl group-hover:text-orange-500 font-primary"
+          >
+            Create Post
+          </span>
+          <span
+            class="relative z-10 text-primary group-hover:text-orange-500 material-symbols-outlined"
+          >
+            edit
+          </span>
+        </a>
+      </li>
+      <li class="p-5">
+        <a
+          href="/logout"
+          class="relative border border-gray-700 flex items-center justify-between w-full p-4 rounded-lg group overflow-hidden hover:bg-gray-800 focus:bg-gray-700 transition duration-300"
+        >
+          <span
+            class="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent opacity-0 group-hover:opacity-30 transition-opacity duration-300 pointer-events-none"
+          ></span>
+          <span
+            class="relative z-10 text-primary text-xl group-hover:text-orange-500 font-primary"
+          >
+            Logout
+          </span>
+          <span
+            class="relative z-10 text-primary group-hover:text-orange-500 material-symbols-outlined"
+          >
+            logout
+          </span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Navigation search functionality
+    const navSearchForm = document.querySelector("#nav-search-form");
+    const navSubmitButton = document.getElementById("nav-submit-btn");
+    const navSearchInput = document.getElementById("nav-search-bar");
+    const navSearchQuery = document.querySelector("#nav-search-query");
+
+    navSubmitButton?.addEventListener("click", function (event) {
+      event.preventDefault();
+      const searchValue = navSearchInput.value;
+      if (searchValue.trim()) {
+        navSearchQuery.value = searchValue;
+        navSearchForm.submit();
+      }
+    });
+
+    // Sidebar search functionality
+    const sidebarSearchForm = document.querySelector("#sidebar-search-form");
+    const sidebarSubmitButton = document.getElementById("sidebar-submit-btn");
+    const sidebarSearchInput = document.getElementById("sidebar-search-bar");
+    const sidebarSearchQuery = document.querySelector("#sidebar-search-query");
+
+    sidebarSubmitButton?.addEventListener("click", function (event) {
+      event.preventDefault();
+      const searchValue = sidebarSearchInput.value;
+      if (searchValue.trim()) {
+        sidebarSearchQuery.value = searchValue;
+        sidebarSearchForm.submit();
+      }
+    });
+
+    // Handle Enter key press for both search bars
+    navSearchInput?.addEventListener("keypress", function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        navSubmitButton.click();
+      }
+    });
+
+    sidebarSearchInput?.addEventListener("keypress", function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        sidebarSubmitButton.click();
+      }
+    });
+  });
+
+  // Update mobile sidebar toggle
+  function showsidebar() {
+    const sidebar = document.querySelector("#sidebar");
+    sidebar.classList.toggle("hidden");
+    sidebar.classList.toggle("-translate-x-full");
+  }
+</script>

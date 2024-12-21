@@ -1,0 +1,199 @@
+{% extends 'layouts/base.html' %} {% include 'components/navbar.html' %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{{ article.title }}{% endblock %}</title>
+    {% block head_styles %}
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/4.0.16/css/froala_editor.pkgd.min.css"
+      rel="stylesheet"
+    />
+
+    {% endblock %}
+  </head>
+
+  <body>
+    {% block content %} {% if article.thumbnail %}
+    <div class="w-full h-[400px] overflow-hidden relative">
+      <img
+        src="{{ article.thumbnail }}"
+        alt="{{ article.title }} Thumbnail"
+        class="w-full h-full object-cover absolute inset-0 brightness-50"
+      />
+      <div class="absolute inset-0 flex items-center justify-center">
+        <h1 class="text-white text-4xl sm:text-5xl font-bold text-center px-4">
+          {{ article.title }}
+        </h1>
+      </div>
+    </div>
+    {% endif %}
+    <main class="relative">
+      <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <article
+          class="max-w-4xl mx-auto bg-[#212121] p-6 sm:p-8 shadow rounded-lg"
+        >
+          {% if not article.thumbnail %}
+          <header class="mb-6">
+            <h1
+              class="text-4xl sm:text-5xl font-bold text-primary font-primary"
+            >
+              {{ article.title }}
+            </h1>
+            {% endif %}
+            <p class="text-gray-400 font-bold text-sm mt-2 font-primary">
+              By
+              <strong class="text-primary font-primary"
+                >{{ article.author.username }}</strong
+              >
+              | Published on {{ article.created_at.strftime('%Y-%m-%d') }} |
+              Views: {{article.view_count}}
+            </p>
+            {% if article.author_id == current_user.id or current_user.is_admin
+            %}
+            <br />
+            <hr />
+            <div class="flex flex-wrap gap-2 mt-4 text-primary font-primary">
+              <a
+                href="{{ url_for('edit_post', slug=article.slug) }}"
+                class="inline-block bg-accent px-3 py-1 text-sm rounded-full mb-4 font-primary text-orange-200 hover:bg-primary hover:text-black transition duration-300"
+              >
+                Edit Article
+              </a>
+              <button
+                onclick="openDeleteModal()"
+                class="inline-block bg-accent px-3 py-1 text-sm rounded-full mb-4 font-primary text-orange-200 hover:bg-primary hover:text-black transition duration-300"
+              >
+                Delete Article
+              </button>
+            </div>
+            {% endif %} {% if not article.thumbnail %}
+          </header>
+          {% endif %}
+          <section class="content leading-7 text-gray-300 font-primary">
+            <div class="froala-content">{{ article.content | safe }}</div>
+          </section>
+          <footer class="mt-6">
+            <div class="flex flex-wrap gap-2 mb-4 text-primary font-primary">
+              <strong>Categories:</strong>
+              {% if categories %} {% for category in categories %}
+              <span
+                class="inline-block bg-accent text-orange-200 px-3 py-1 text-sm mb-3 rounded-full font-primary"
+              >
+                {{ category.name }}
+              </span>
+              {% endfor %} {% else %}
+              <span class="text-gray-500 font-primary">None</span>
+              {% endif %}
+            </div>
+            <div class="flex flex-wrap gap-2 text-primary font-primary">
+              <strong>Tags:</strong>
+              {% if tags %} {% for tag in tags %}
+              <span
+                class="inline-block bg-accent px-3 py-1 text-sm rounded-full mb-4 font-primary text-orange-200"
+              >
+                {{ tag.name }}
+              </span>
+              {% endfor %} {% else %}
+              <span class="text-gray-500 font-primary">None</span>
+              {% endif %}
+            </div>
+          </footer>
+          <hr />
+          <br />
+          <div id="disqus_thread"></div>
+        </article>
+      </div>
+    </main>
+    {% block scripts %}
+    <form
+      id="deleteForm"
+      action="/posts/delete/{{ article.slug }}"
+      method="POST"
+      style="display: none"
+    >
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+    </form>
+    <div
+      id="deleteModal"
+      class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4"
+      style="display: none"
+    >
+      <div
+        class="bg-background rounded-xl shadow-lg border border-black p-8 w-full max-w-md text-center relative"
+      >
+        <button
+          id="close-modal-btn"
+          class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+        >
+          ✕
+        </button>
+        <h1 class="font-primary font-bold text-primary text-xl mb-6">
+          Are you sure you want to delete:
+          <br />
+          {{ article.title }}
+        </h1>
+        <div class="flex justify-center space-x-4">
+          <button
+            onclick="document.getElementById('deleteForm').submit();"
+            id="delete-yes-btn"
+            class="bg-red-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-red-700 transition duration-300"
+          >
+            Yes, Delete
+          </button>
+          <button
+            id="delete-no-btn"
+            class="bg-gray-300 text-black font-bold py-2 px-6 rounded-lg hover:bg-gray-400 transition duration-300"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var disqus_config = function () {
+        this.page.url = "http://127.0.0.1:5000/posts/{{ article.slug }}";
+        this.page.identifier = "{{ article.id }}";
+      };
+
+      (function () {
+        // REQUIRED CONFIGURATION VARIABLE: EDIT THE SHORTNAME BELOW
+        var d = document,
+          s = d.createElement("script");
+
+        // IMPORTANT: Replace EXAMPLE with your forum shortname!
+        s.src = "https://campaign-support.disqus.com/embed.js";
+
+        s.setAttribute("data-timestamp", +new Date());
+        (d.head || d.body).appendChild(s);
+      })();
+
+      // -----Delete Modal------
+      function openDeleteModal() {
+        document.getElementById("deleteModal").style.display = "flex";
+      }
+
+      function closeDeleteModal() {
+        document.getElementById("deleteModal").style.display = "none";
+      }
+
+      // Add event listeners
+      document
+        .getElementById("delete-no-btn")
+        .addEventListener("click", closeDeleteModal);
+      document
+        .getElementById("close-modal-btn")
+        .addEventListener("click", closeDeleteModal);
+    </script>
+
+    <noscript>
+      Please enable JavaScript to view the
+      <a href="https://disqus.com/?ref_noscript" rel="nofollow">
+        comments powered by Disqus.
+      </a>
+    </noscript>
+    {% endblock %} {% endblock %}
+  </body>
+</html>

@@ -4,18 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/static/css/main.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="/static/css/scrollbar.css" />
+    <link rel="stylesheet" href="/static/css/custom.css" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
       rel="stylesheet"
     />
-    <title>{% block title %}{% endblock %}</title>
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+    <link
+      rel="shortcut icon"
+      sizes="196x196"
+      href="/static/img/favicon.ico"
+      type="image/x-icon"
+    />
+
     <script src="/static/js/alert-dismissal.js"></script>
     <script src="/static/js/show-password.js"></script>
+    <title>{% block title %}{% endblock %}</title>
+    {% block head_scripts %} {% endblock %} {% block head_styles %}{% endblock
+    %}
   </head>
-  <body>
+  <body class="bg-gradient-to-b from-[#0D0D0D] to-[#1A1A1A]">
     {% with messages = get_flashed_messages() %} {% if messages %} {% for msg in
     messages %}
     <div
@@ -57,6 +69,7 @@
         </svg>
       </button>
     </div>
-    {% endfor %} {% endif %} {% endwith %} {% block content %} {% endblock %}
+    {% endfor %} {% endif %} {% endwith %} {% block content %}{% endblock %} {%
+    block scripts %}{% endblock %}
   </body>
 </html>
