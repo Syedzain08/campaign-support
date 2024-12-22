@@ -581,7 +581,7 @@ def edit_post(slug):
 @app.route("/posts/<slug>", methods=["GET", "POST"])
 def view_post(slug):
     if not user_logged_in(session=session):
-        flash("Sign in to edit posts!")
+        flash("Sign in to view posts!")
         return redirect(url_for("login"))
 
     article = Articles.query.filter_by(slug=slug).first()
