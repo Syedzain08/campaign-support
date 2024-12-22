@@ -580,6 +580,9 @@ def edit_post(slug):
 
 @app.route("/posts/<slug>", methods=["GET", "POST"])
 def view_post(slug):
+    if not user_logged_in(session=session):
+        flash("Sign in to edit posts!")
+        return redirect(url_for("login"))
 
     article = Articles.query.filter_by(slug=slug).first()
 
@@ -856,6 +859,4 @@ def handle_csrf_error(e):
 # ---MAIN--- #
 
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-    app.run(debug=True)
+    app.run()
